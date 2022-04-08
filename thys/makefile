@@ -3,41 +3,47 @@
 # 
 #**************
 
-targets=move.olean \
-		sem.olean \
-		bitvec.olean \
-		asymptotic.olean \
-		loop_combinator.olean \
-		core
+baseModules=move.olean \
+			sem.olean \
+			bitvec.olean \
+			asymptotic.olean \
+			loop_combinator.olean 
+
+dirModules=core \
+		   fixedbitset \
+		   alloc \
+		   collections
+
+targets=$(baseModules)\
+		$(dirModules)
 
 all: $(targets)
 
-.PHONY: clean core
+.PHONY: clean $(dirModules)
 
 #Lean2 breaks when running multiple instances
 MAKEFLAGS=--jobs=1
 
+#Typecheck base modules
 move.olean: move.lean
-	$(LEAN2_BIN) -o $@ $<
-
 sem.olean: sem.lean
+bitvec.olean: bitvec.lean move.olean
+asymptotic.olean: asymptotic.lean move.olean
+loop_combinator.olean: loop_combinator.lean asymptotic.olean sem.olean
+$(baseModules):
 	$(LEAN2_BIN) -o $@ $<
 
-bitvec.olean: move.olean 
-bitvec.olean: bitvec.lean
-	$(LEAN2_BIN) -o $@ $<
-
-asymptotic.olean: move.olean 
-asymptotic.olean: asymptotic.lean
-	$(LEAN2_BIN) -o $@ $<
-
-loop_combinator.olean: sem.olean asymptotic.olean
-loop_combinator.olean: loop_combinator.lean
-	$(LEAN2_BIN) -o $@ $<
-
-core: $(targets) 
-	$(MAKE) -C core
+#Typecheck subdirectories
+core: bitvec.olean loop_combinator.olean
+alloc: core 
+collections: core
+fixedbitset: core collections
+$(dirModules):
+	$(MAKE) -C $@ 
 
 clean:
-	rm *.olean
+	-rm -f *.olean
 	$(MAKE) -C core clean
+	$(MAKE) -C fixedbitset clean
+	$(MAKE) -C collections clean
+	$(MAKE) -C alloc clean

@@ -3,7 +3,7 @@
 # 
 #**************
 
-targets=generated.olean thy.olean pre.olean
+targets=generated.olean thy.olean
 
 all: $(targets)
 
@@ -12,8 +12,7 @@ all: $(targets)
 #Lean2 breaks when running multiple instances
 MAKEFLAGS=--jobs=1
 
-pre.olean: pre.lean
-generated.olean: generated.lean pre.olean
+generated.olean: generated.lean
 thy.olean: thy.lean generated.olean
 $(targets):
 	$(LEAN2_BIN) -o $@ $<

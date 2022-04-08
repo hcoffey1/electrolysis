@@ -7,9 +7,9 @@ targets=thys
 
 all: $(targets)
 
-.PHONY: clean thys
+.PHONY: clean thys trans
 
-thys:
+thys: trans
 	$(MAKE) -C thys
 
 clean:
