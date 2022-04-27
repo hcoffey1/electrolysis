@@ -38,6 +38,43 @@ inductive core.ops.RangeInclusive (Idx : Type₁) :=
 structure core.ops.RangeToInclusive (Idx : Type₁) := mk {} ::
 («end» : Idx)
 
+inductive core.num.FpCategory :=
+| Nan {} : core.num.FpCategory
+| Infinite {} : core.num.FpCategory
+| Zero {} : core.num.FpCategory
+| Subnormal {} : core.num.FpCategory
+| Normal {} : core.num.FpCategory
+
+definition core.num.FpCategory.discr (self : core.num.FpCategory) : isize := match self with
+| core.num.FpCategory.Nan := 0
+| core.num.FpCategory.Infinite := 1
+| core.num.FpCategory.Zero := 2
+| core.num.FpCategory.Subnormal := 3
+| core.num.FpCategory.Normal := 4
+end
+
+structure core.num.Float [class] (Self : Type₁) :=
+(nan : (sem (Self)))
+(infinity : (sem (Self)))
+(neg_infinity : (sem (Self)))
+(neg_zero : (sem (Self)))
+(zero : (sem (Self)))
+(one : (sem (Self)))
+(is_nan : (Self → sem (bool)))
+(is_infinite : (Self → sem (bool)))
+(is_finite : (Self → sem (bool)))
+(is_normal : (Self → sem (bool)))
+(classify : (Self → sem ((core.num.FpCategory))))
+(integer_decode : (Self → sem ((u64 × i16 × i8))))
+(abs : (Self → sem (Self)))
+(signum : (Self → sem (Self)))
+(is_sign_positive : (Self → sem (bool)))
+(is_sign_negative : (Self → sem (bool)))
+(recip : (Self → sem (Self)))
+(powi : (Self → i32 → sem (Self)))
+(to_degrees : (Self → sem (Self)))
+(to_radians : (Self → sem (Self)))
+
 structure core.clone.Clone [class] (Self : Type₁) :=
 (clone : (Self → sem (Self)))
 

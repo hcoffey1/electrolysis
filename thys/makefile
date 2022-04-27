@@ -12,6 +12,7 @@ baseModules=move.olean \
 dirModules=core \
 		   fixedbitset \
 		   alloc \
+		   rand \
 		   collections
 
 targets=$(baseModules)\
@@ -35,6 +36,7 @@ $(baseModules):
 
 #Typecheck subdirectories
 core: bitvec.olean loop_combinator.olean
+rand: core
 alloc: core 
 collections: core
 fixedbitset: core collections
@@ -47,3 +49,4 @@ clean:
 	$(MAKE) -C fixedbitset clean
 	$(MAKE) -C collections clean
 	$(MAKE) -C alloc clean
+	$(MAKE) -C rand clean

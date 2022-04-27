@@ -19,6 +19,7 @@ trans:
 	cargo run collections
 	cargo run alloc
 	cargo run fixedbitset
+	cargo run rand 
 
 thys: trans
 	$(MAKE) -C thys

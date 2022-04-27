@@ -9,6 +9,8 @@ targets = [
   #ref
   "core.«i32 as core.default.Default»",
   'core.ops.Range\w*',
+  #'core.mem.replace',
+  'core.num.Float',
 ]
 
 # items axiomatized in pre.lean
