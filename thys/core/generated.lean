@@ -113,6 +113,60 @@ definition core.«&'a u32 as core.ops.BitAnd<u32>» [instance] := ⦃
 
 structure core.ops.RangeFull := mk {} ::
 
+structure core.cmp.PartialEq [class] (Self : Type₁) (Rhs : Type₁) :=
+(eq : (Self → Rhs → sem (bool)))
+
+structure core.cmp.Eq [class] (Self : Type₁) extends core.cmp.PartialEq Self Self := mk
+
+attribute [coercion] core.cmp.Eq.to_PartialEq
+
+inductive core.cmp.Ordering :=
+| Less {} : core.cmp.Ordering
+| Equal {} : core.cmp.Ordering
+| Greater {} : core.cmp.Ordering
+
+definition core.cmp.Ordering.discr (self : core.cmp.Ordering) : isize := match self with
+| core.cmp.Ordering.Less := -1
+| core.cmp.Ordering.Equal := 0
+| core.cmp.Ordering.Greater := 1
+end
+
+structure core.cmp.PartialOrd [class] (Self : Type₁) (Rhs : Type₁) extends core.cmp.PartialEq Self Rhs :=
+(partial_cmp : (Self → Rhs → sem ((core.option.Option (core.cmp.Ordering)))))
+
+attribute [coercion] core.cmp.PartialOrd.to_PartialEq
+
+definition core.cmp.PartialOrd.lt {Self : Type₁} {Rhs : Type₁} [«core.cmp.PartialOrd Self Rhs» : core.cmp.PartialOrd Self Rhs] (selfₐ : Self) (otherₐ : Rhs) : sem (bool) :=
+let' «self$3» ← selfₐ;
+let' «other$4» ← otherₐ;
+let' t6 ← «self$3»;
+let' t7 ← «other$4»;
+dostep «$tmp» ← @core.cmp.PartialOrd.partial_cmp Self Rhs «core.cmp.PartialOrd Self Rhs» t6 t7;
+let' t5 ← «$tmp»;
+match t5 with
+| core.option.Option.None :=
+let' ret ← ff;
+return (ret)
+ | core.option.Option.Some «» :=
+do «$tmp0» ← match t5 with
+| core.option.Option.None := mzero
+ | core.option.Option.Some «$0» := return «$0»
+end
+;
+match «$tmp0» with
+| core.cmp.Ordering.Less :=
+let' ret ← tt;
+return (ret)
+ | core.cmp.Ordering.Equal :=
+let' ret ← ff;
+return (ret)
+ | core.cmp.Ordering.Greater :=
+let' ret ← ff;
+return (ret)
+end
+end
+
+
 definition core.«u32 as core.clone.Clone».clone (selfₐ : u32) : sem (u32) :=
 let' «self$2» ← selfₐ;
 let' t3 ← «self$2»;
@@ -153,11 +207,6 @@ let' ret ← t3 =ᵇ (0 : nat);
 return (ret)
 
 
-definition core.«[T] as core.slice.SliceExt» [instance] {T : Type₁} := ⦃
-  core.slice.SliceExt (slice T) T,
-  len := @core.«[T] as core.slice.SliceExt».len T
-⦄
-
 definition core.«[T] as core.slice.SliceExt».get {T : Type₁} (selfₐ : (slice T)) (indexₐ : usize) : sem ((core.option.Option T)) :=
 let' «self$3» ← selfₐ;
 let' «index$4» ← indexₐ;
@@ -180,28 +229,10 @@ let' ret ← core.option.Option.None;
 return (ret)
 
 
-structure core.cmp.PartialEq [class] (Self : Type₁) (Rhs : Type₁) :=
-(eq : (Self → Rhs → sem (bool)))
-
-structure core.cmp.Eq [class] (Self : Type₁) extends core.cmp.PartialEq Self Self := mk
-
-attribute [coercion] core.cmp.Eq.to_PartialEq
-
-inductive core.cmp.Ordering :=
-| Less {} : core.cmp.Ordering
-| Equal {} : core.cmp.Ordering
-| Greater {} : core.cmp.Ordering
-
-definition core.cmp.Ordering.discr (self : core.cmp.Ordering) : isize := match self with
-| core.cmp.Ordering.Less := -1
-| core.cmp.Ordering.Equal := 0
-| core.cmp.Ordering.Greater := 1
-end
-
-structure core.cmp.PartialOrd [class] (Self : Type₁) (Rhs : Type₁) extends core.cmp.PartialEq Self Rhs :=
-(partial_cmp : (Self → Rhs → sem ((core.option.Option (core.cmp.Ordering)))))
-
-attribute [coercion] core.cmp.PartialOrd.to_PartialEq
+definition core.«[T] as core.slice.SliceExt» [instance] {T : Type₁} := ⦃
+  core.slice.SliceExt (slice T) T,
+  len := @core.«[T] as core.slice.SliceExt».len T
+⦄
 
 structure core.cmp.Ord [class] (Self : Type₁) extends core.cmp.Eq Self, core.cmp.PartialOrd Self Self :=
 (cmp : (Self → Self → sem ((core.cmp.Ordering))))

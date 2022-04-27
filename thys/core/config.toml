@@ -11,6 +11,7 @@ targets = [
   'core.ops.Range\w*',
   #'core.mem.replace',
   'core.num.Float',
+  "core.cmp.PartialOrd.lt",
 ]
 
 # items axiomatized in pre.lean

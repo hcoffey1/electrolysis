@@ -18,6 +18,39 @@ structure rand.distributions.range.Range (X : Type₁) := mk {} ::
 (range : X)
 (accept_zone : X)
 
+structure rand.Rng [class] (Self : Type₁) :=
+(next_u32 : (Self → sem (u32 × Self)))
+
+structure rand.distributions.range.SampleRange [class] (Self : Type₁) :=
+(construct_range : (Self → Self → sem ((rand.distributions.range.Range Self))))
+(sample_range : Π {R : Type₁} [«rand.Rng R» : rand.Rng R], ((rand.distributions.range.Range Self) → R → sem (Self × R)))
+
+definition rand.distributions.range.«Range<X>».new.«$_MSG_FILE_LINE» : sem (string × string × u32) :=
+let' ret ← ("Range::new called with `low >= high`", "/home/hayden/.rustup/toolchains/nightly-2016-11-22-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src/librand/distributions/range.rs", (42 : nat));
+return (ret)
+
+
+definition rand.distributions.range.«Range<X>».new {X : Type₁} [«rand.distributions.range.SampleRange X» : rand.distributions.range.SampleRange X] [«core.cmp.PartialOrd X X» : core.cmp.PartialOrd X X] (lowₐ : X) (highₐ : X) : sem ((rand.distributions.range.Range X)) :=
+let' «low$3» ← lowₐ;
+let' «high$4» ← highₐ;
+let' t8 ← «low$3»;
+let' t10 ← «high$4»;
+dostep «$tmp» ← @core.cmp.PartialOrd.lt X X «core.cmp.PartialOrd X X» t8 t10;
+let' t7 ← «$tmp»;
+let' t6 ← bool.bnot t7;
+if t6 = bool.tt then
+let' t13 ← rand.distributions.range.«Range<X>».new.«$_MSG_FILE_LINE»;
+let' t12 ← t13;
+mzero
+else
+let' t5 ← ⋆;
+let' t14 ← «low$3»;
+let' t15 ← «high$4»;
+dostep «$tmp» ← @rand.distributions.range.SampleRange.construct_range X «rand.distributions.range.SampleRange X» t14 t15;
+let' ret ← «$tmp»;
+return (ret)
+
+
 structure rand.chacha.ChaChaRng := mk {} ::
 (buffer : (array u32 16))
 (state : (array u32 16))
@@ -28,9 +61,6 @@ structure rand.reseeding.ReseedingRng (R : Type₁) (Rsdr : Type₁) := mk {} ::
 (generation_threshold : usize)
 (bytes_generated : usize)
 (reseeder : Rsdr)
-
-structure rand.Rng [class] (Self : Type₁) :=
-(next_u32 : (Self → sem (u32 × Self)))
 
 structure rand.reseeding.Reseeder [class] (Self : Type₁) (R : Type₁) :=
 (reseed : (Self → R → sem (unit × Self × R)))
