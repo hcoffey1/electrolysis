@@ -19,4 +19,5 @@ targets = [
     #Range
     "rand.distributions.range.Range", 
     "rand.distributions.range.«Range<X>».(new)", 
+    "rand.distributions.range.SampleRange", 
 ]
