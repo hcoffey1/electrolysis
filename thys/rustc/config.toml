@@ -1,0 +1,17 @@
+rustc_args = "$RUST_SRC_PATH/librustc/lib.rs"
+
+targets = [
+    #"rustc.cfg.construct.construct",
+    "rustc.lint.context.EarlyLint",
+    #"rustc.lint.context.IntoEarlyLint",
+    #"rustc.lint.context.FutureIncompatibleInfo",
+    #"rustc.lint.context.LintStore.new", #unimplimented: rvalue | Box([...
+    #"rustc.lint.context.LintContext",
+    #"rustc.lint.context.LintStore.(get_lints)", #unimplimented: trait object 
+    #"rustc.lint.context.LintStore.(get_lints)", #unimplimented: trait object 
+]
+
+#Code to replace with axioms
+#ignore = [
+#'',
+#]
