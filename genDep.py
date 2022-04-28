@@ -108,6 +108,12 @@ def updateModule(module, deps):
 
 def main():
 	module = sys.argv[1]
+	if not os.path.exists('./thys/' + module):
+		print("Module not yet created, generating now...")
+		createNewModule(module)
+		print("Module has been generated.")
+		return 
+
 	with open('./thys/' + module + '/generated.lean') as f:
 		genLean = f.readlines()
 
