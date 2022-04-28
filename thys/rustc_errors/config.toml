@@ -1,0 +1,10 @@
+rustc_args = "$RUST_SRC_PATH/librustc_errors/lib.rs"
+
+targets = [
+    "rustc_errors.diagnostic.Diagnostic",
+]
+
+#Code to replace with axioms
+#ignore = [
+#'syntax_pos.MultiSpan',
+#]
