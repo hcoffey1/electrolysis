@@ -25,6 +25,18 @@ targets = [
   "core.cmp.PartialOrd",
   "core.cmp.min",
   "core.cmp.max",
+
+  #HC, char
+  "core.char.from_digit",
+  #"core.char.from_u32", #Unsafe panic
+  "core.char.CharTryFromError",
+  #"core.char.CharExt", #Mutable reference other than first
+  "core.char.EscapeUnicode",
+  "core.char.EscapeDefault",
+  "core.char.EscapeDebug",
+  #"core.char.DecodeUtf8", #Struct with type dependency
+  #"core.char.decode_utf8", #Struct with type dependency
+  "core.char.InvalidSequence",
 ]
 
 # items axiomatized in pre.lean

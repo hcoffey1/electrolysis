@@ -296,6 +296,97 @@ definition core.«i32 as core.default.Default» [instance] := ⦃
   default := @core.«i32 as core.default.Default».default
 ⦄
 
+inductive core.char.CharTryFromError :=
+mk {} : unit → core.char.CharTryFromError
+
+definition core.char.from_digit.«$_MSG_FILE_LINE» : sem (string × string × u32) :=
+let' ret ← ("from_digit: radix is too high (maximum 36)", "/home/hayden/.rustup/toolchains/nightly-2016-11-22-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src/libcore/char.rs", (294 : nat));
+return (ret)
+
+
+definition core.char.from_digit (numₐ : u32) (radixₐ : u32) : sem ((core.option.Option char32)) :=
+let' «num$3» ← numₐ;
+let' «radix$4» ← radixₐ;
+let' t7 ← «radix$4»;
+let' t6 ← t7 >ᵇ (36 : nat);
+if t6 = bool.tt then
+let' t11 ← core.char.from_digit.«$_MSG_FILE_LINE»;
+let' t10 ← t11;
+mzero
+else
+let' t5 ← ⋆;
+let' t13 ← «num$3»;
+let' t14 ← «radix$4»;
+let' t12 ← t13 <ᵇ t14;
+if t12 = bool.tt then
+let' t16 ← «num$3»;
+do «$tmp0» ← (unsigned_to_unsigned u8.bits t16);
+let' «num$15» ← «$tmp0»;
+let' t18 ← «num$15»;
+let' t17 ← t18 <ᵇ (10 : nat);
+if t17 = bool.tt then
+let' t21 ← «num$15»;
+do «$tmp0» ← sem.map (λx, (x, tt)) (checked.add u8.bits (48 : nat) t21);
+let' t22 ← «$tmp0»;
+let' t20 ← t22.1;
+do «$tmp0» ← (unsigned_to_char char32.bits t20);
+let' t19 ← «$tmp0»;
+let' ret ← core.option.Option.Some t19;
+return (ret)
+else
+let' t26 ← «num$15»;
+do «$tmp0» ← sem.map (λx, (x, tt)) (checked.add u8.bits (97 : nat) t26);
+let' t27 ← «$tmp0»;
+let' t25 ← t27.1;
+do «$tmp0» ← sem.map (λx, (x, tt)) (checked.sub u8.bits t25 (10 : nat));
+let' t28 ← «$tmp0»;
+let' t24 ← t28.1;
+do «$tmp0» ← (unsigned_to_char char32.bits t24);
+let' t23 ← «$tmp0»;
+let' ret ← core.option.Option.Some t23;
+return (ret)
+else
+let' ret ← core.option.Option.None;
+return (ret)
+
+
+inductive core.char.EscapeUnicodeState :=
+| Done {} : core.char.EscapeUnicodeState
+| RightBrace {} : core.char.EscapeUnicodeState
+| Value {} : core.char.EscapeUnicodeState
+| LeftBrace {} : core.char.EscapeUnicodeState
+| «Type» {} : core.char.EscapeUnicodeState
+| Backslash {} : core.char.EscapeUnicodeState
+
+definition core.char.EscapeUnicodeState.discr (self : core.char.EscapeUnicodeState) : isize := match self with
+| core.char.EscapeUnicodeState.Done := 0
+| core.char.EscapeUnicodeState.RightBrace := 1
+| core.char.EscapeUnicodeState.Value := 2
+| core.char.EscapeUnicodeState.LeftBrace := 3
+| core.char.EscapeUnicodeState.«Type» := 4
+| core.char.EscapeUnicodeState.Backslash := 5
+end
+
+structure core.char.EscapeUnicode := mk {} ::
+(c : char32)
+(state : (core.char.EscapeUnicodeState))
+(hex_digit_idx : usize)
+
+inductive core.char.EscapeDefaultState :=
+| Done {} : core.char.EscapeDefaultState
+| Char {} : char32 → core.char.EscapeDefaultState
+| Backslash {} : char32 → core.char.EscapeDefaultState
+| Unicode {} : (core.char.EscapeUnicode) → core.char.EscapeDefaultState
+
+structure core.char.EscapeDefault := mk {} ::
+(state : (core.char.EscapeDefaultState))
+
+inductive core.char.EscapeDebug :=
+mk {} : (core.char.EscapeDefault) → core.char.EscapeDebug
+
+inductive core.char.InvalidSequence :=
+mk {} : unit → core.char.InvalidSequence
+
 structure core.iter.iterator.Iterator [class] (Self : Type₁) («<Self as iter.iterator.Iterator>.Item» : Type₁) :=
 (next : (Self → sem ((core.option.Option «<Self as iter.iterator.Iterator>.Item») × Self)))
 
