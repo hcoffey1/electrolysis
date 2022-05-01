@@ -12,6 +12,19 @@ targets = [
   #'core.mem.replace',
   'core.num.Float',
   "core.cmp.PartialOrd.lt",
+
+  #HC, cmp
+  "core.cmp.PartialEq",
+  "core.cmp.Eq",
+  "core.cmp.AssertParamIsEq",
+  "core.cmp.Ordering",
+  "core.cmp.reverse",
+  "core.cmp.then",
+  "core.cmp.then_with",
+  "core.cmp.Ord",
+  "core.cmp.PartialOrd",
+  "core.cmp.min",
+  "core.cmp.max",
 ]
 
 # items axiomatized in pre.lean

@@ -120,6 +120,9 @@ structure core.cmp.Eq [class] (Self : Type₁) extends core.cmp.PartialEq Self S
 
 attribute [coercion] core.cmp.Eq.to_PartialEq
 
+structure core.cmp.AssertParamIsEq (T : Type₁) := mk {} ::
+(«$_field» : (core.marker.PhantomData T))
+
 inductive core.cmp.Ordering :=
 | Less {} : core.cmp.Ordering
 | Equal {} : core.cmp.Ordering
@@ -135,6 +138,11 @@ structure core.cmp.PartialOrd [class] (Self : Type₁) (Rhs : Type₁) extends c
 (partial_cmp : (Self → Rhs → sem ((core.option.Option (core.cmp.Ordering)))))
 
 attribute [coercion] core.cmp.PartialOrd.to_PartialEq
+
+structure core.cmp.Ord [class] (Self : Type₁) extends core.cmp.Eq Self, core.cmp.PartialOrd Self Self :=
+(cmp : (Self → Self → sem ((core.cmp.Ordering))))
+
+attribute [coercion] core.cmp.Ord.to_Eq core.cmp.Ord.to_PartialOrd
 
 definition core.cmp.PartialOrd.lt {Self : Type₁} {Rhs : Type₁} [«core.cmp.PartialOrd Self Rhs» : core.cmp.PartialOrd Self Rhs] (selfₐ : Self) (otherₐ : Rhs) : sem (bool) :=
 let' «self$3» ← selfₐ;
@@ -165,6 +173,102 @@ let' ret ← ff;
 return (ret)
 end
 end
+
+
+definition core.cmp.PartialOrd.le {Self : Type₁} {Rhs : Type₁} [«core.cmp.PartialOrd Self Rhs» : core.cmp.PartialOrd Self Rhs] (selfₐ : Self) (otherₐ : Rhs) : sem (bool) :=
+let' «self$3» ← selfₐ;
+let' «other$4» ← otherₐ;
+let' t6 ← «self$3»;
+let' t7 ← «other$4»;
+dostep «$tmp» ← @core.cmp.PartialOrd.partial_cmp Self Rhs «core.cmp.PartialOrd Self Rhs» t6 t7;
+let' t5 ← «$tmp»;
+match t5 with
+| core.option.Option.None :=
+let' ret ← ff;
+return (ret)
+ | core.option.Option.Some «» :=
+do «$tmp0» ← match t5 with
+| core.option.Option.None := mzero
+ | core.option.Option.Some «$0» := return «$0»
+end
+;
+match «$tmp0» with
+| core.cmp.Ordering.Less :=
+let' ret ← tt;
+return (ret)
+ | core.cmp.Ordering.Equal :=
+let' ret ← tt;
+return (ret)
+ | core.cmp.Ordering.Greater :=
+let' ret ← ff;
+return (ret)
+end
+end
+
+
+definition core.cmp.min {T : Type₁} [«core.cmp.Ord T» : core.cmp.Ord T] (v1ₐ : T) (v2ₐ : T) : sem (T) :=
+let' «v1$3» ← v1ₐ;
+let' «v2$4» ← v2ₐ;
+let' t6 ← «v1$3»;
+let' t8 ← «v2$4»;
+dostep «$tmp» ← @core.cmp.PartialOrd.le T T «core.cmp.Ord T» t6 t8;
+let' t5 ← «$tmp»;
+if t5 = bool.tt then
+let' t9 ← «v1$3»;
+let' ret ← t9;
+return (ret)
+else
+let' t10 ← «v2$4»;
+let' ret ← t10;
+return (ret)
+
+
+definition core.cmp.PartialOrd.ge {Self : Type₁} {Rhs : Type₁} [«core.cmp.PartialOrd Self Rhs» : core.cmp.PartialOrd Self Rhs] (selfₐ : Self) (otherₐ : Rhs) : sem (bool) :=
+let' «self$3» ← selfₐ;
+let' «other$4» ← otherₐ;
+let' t6 ← «self$3»;
+let' t7 ← «other$4»;
+dostep «$tmp» ← @core.cmp.PartialOrd.partial_cmp Self Rhs «core.cmp.PartialOrd Self Rhs» t6 t7;
+let' t5 ← «$tmp»;
+match t5 with
+| core.option.Option.None :=
+let' ret ← ff;
+return (ret)
+ | core.option.Option.Some «» :=
+do «$tmp0» ← match t5 with
+| core.option.Option.None := mzero
+ | core.option.Option.Some «$0» := return «$0»
+end
+;
+match «$tmp0» with
+| core.cmp.Ordering.Less :=
+let' ret ← ff;
+return (ret)
+ | core.cmp.Ordering.Equal :=
+let' ret ← tt;
+return (ret)
+ | core.cmp.Ordering.Greater :=
+let' ret ← tt;
+return (ret)
+end
+end
+
+
+definition core.cmp.max {T : Type₁} [«core.cmp.Ord T» : core.cmp.Ord T] (v1ₐ : T) (v2ₐ : T) : sem (T) :=
+let' «v1$3» ← v1ₐ;
+let' «v2$4» ← v2ₐ;
+let' t6 ← «v2$4»;
+let' t8 ← «v1$3»;
+dostep «$tmp» ← @core.cmp.PartialOrd.ge T T «core.cmp.Ord T» t6 t8;
+let' t5 ← «$tmp»;
+if t5 = bool.tt then
+let' t9 ← «v2$4»;
+let' ret ← t9;
+return (ret)
+else
+let' t10 ← «v1$3»;
+let' ret ← t10;
+return (ret)
 
 
 definition core.«u32 as core.clone.Clone».clone (selfₐ : u32) : sem (u32) :=
@@ -233,11 +337,6 @@ definition core.«[T] as core.slice.SliceExt» [instance] {T : Type₁} := ⦃
   core.slice.SliceExt (slice T) T,
   len := @core.«[T] as core.slice.SliceExt».len T
 ⦄
-
-structure core.cmp.Ord [class] (Self : Type₁) extends core.cmp.Eq Self, core.cmp.PartialOrd Self Self :=
-(cmp : (Self → Self → sem ((core.cmp.Ordering))))
-
-attribute [coercion] core.cmp.Ord.to_Eq core.cmp.Ord.to_PartialOrd
 
 section
 parameters {T : Type₁} [«core.cmp.Ord T» : core.cmp.Ord T]
