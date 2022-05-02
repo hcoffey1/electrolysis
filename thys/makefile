@@ -32,7 +32,7 @@ bitvec.olean: bitvec.lean move.olean
 asymptotic.olean: asymptotic.lean move.olean
 loop_combinator.olean: loop_combinator.lean asymptotic.olean sem.olean
 $(baseModules):
-	$(LEAN2_BIN) -o $@ $<
+	$(LEAN2_BIN) -M 16384 -o $@ $<
 
 #Typecheck subdirectories
 core: bitvec.olean loop_combinator.olean

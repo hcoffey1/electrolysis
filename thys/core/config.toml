@@ -37,6 +37,16 @@ targets = [
   #"core.char.DecodeUtf8", #Struct with type dependency
   #"core.char.decode_utf8", #Struct with type dependency
   "core.char.InvalidSequence",
+    
+  #HC, SipHasher
+  "core.hash.sip.SipHasher",
+  "core.hash.sip.SipHasher.new",
+
+  "core.hash.sip.SipHasher13",
+  "core.hash.sip.SipHasher13.new",
+
+  "core.hash.sip.SipHasher24",
+  "core.hash.sip.SipHasher24.new",
 ]
 
 # items axiomatized in pre.lean
@@ -64,7 +74,6 @@ fail = [
   'core.num.dec2flt.parse.eat_digits',
   'core.str.next_code_point(_reverse)?',
   'core.str.pattern.TwoWaySearcher.(reverse_)?maximal_suffix',
-  'core.«core.hash.sip.Sip..Rounds as core.hash.sip.Sip».[cd]_rounds',
   'core.num.diy_float.Fp.normalize',
   # broken recursion detection -- would fail anyway
   'core.ops.Carrier',
