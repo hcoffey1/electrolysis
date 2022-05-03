@@ -16,7 +16,7 @@ pre.olean: pre.lean
 generated.olean: generated.lean pre.olean
 thy.olean: thy.lean generated.olean
 $(targets):
-	$(LEAN2_BIN) -M 16384 -o $@ $<
+	/usr/bin/time --verbose $(LEAN2_BIN) -M 16384 -o $@ $<
 
 clean:
 	rm -f *.olean

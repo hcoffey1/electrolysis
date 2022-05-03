@@ -3,6 +3,37 @@ use std::cmp::min;
 use std::cmp::Ordering;
 use std::cmp::PartialEq;
 
+pub fn ternary_search<T: Ord>(
+    target: &T,
+    list: &[T],
+    mut start: usize,
+    mut end: usize,
+) -> Option<usize> {
+    if list.is_empty() {
+        return None;
+    }
+
+    while start <= end {
+        let mid1: usize = start + (end - start) / 3;
+        let mid2: usize = end - (end - start) / 3;
+
+        match target.cmp(&list[mid1]) {
+            Ordering::Less => end = mid1 - 1,
+            Ordering::Equal => return Some(mid1),
+            Ordering::Greater => match target.cmp(&list[mid2]) {
+                Ordering::Greater => start = mid2 + 1,
+                Ordering::Equal => return Some(mid2),
+                Ordering::Less => {
+                    start = mid1 + 1;
+                    end = mid2 - 1;
+                }
+            },
+        }
+    }
+
+    None
+}
+
 pub fn linear_search<T: PartialEq>(item: &T, arr: &[T]) -> Option<usize> {
     for (i, data) in arr.iter().enumerate() {
         if item == data {

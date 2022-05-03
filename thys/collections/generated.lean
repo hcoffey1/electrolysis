@@ -21,6 +21,14 @@ let' ret ← «$tmp»;
 return (ret)
 
 
+definition collections.«[T]».is_empty {T : Type₁} (selfₐ : (slice T)) : sem (bool) :=
+let' «self$2» ← selfₐ;
+let' t3 ← «self$2»;
+dostep «$tmp» ← @core.slice.SliceExt.is_empty (slice T) T (@core.«[T] as core.slice.SliceExt» T) t3;
+let' ret ← «$tmp»;
+return (ret)
+
+
 definition collections.«[T]».get {T : Type₁} (selfₐ : (slice T)) (indexₐ : usize) : sem ((core.option.Option T)) :=
 let' «self$3» ← selfₐ;
 let' «index$4» ← indexₐ;

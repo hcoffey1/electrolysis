@@ -33,7 +33,7 @@ bitvec.olean: bitvec.lean move.olean
 asymptotic.olean: asymptotic.lean move.olean
 loop_combinator.olean: loop_combinator.lean asymptotic.olean sem.olean
 $(baseModules):
-	$(LEAN2_BIN) -M 16384 -o $@ $<
+	/usr/bin/time --verbose $(LEAN2_BIN) -M 16384 -o $@ $<
 
 #Typecheck subdirectories
 core: bitvec.olean loop_combinator.olean
@@ -52,3 +52,4 @@ clean:
 	$(MAKE) -C collections clean
 	$(MAKE) -C alloc clean
 	$(MAKE) -C rand clean
+	$(MAKE) -C examples clean 

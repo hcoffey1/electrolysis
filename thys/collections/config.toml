@@ -5,4 +5,5 @@ targets = [
   #"«collections.vec.Vec<T> as core.ops.Deref»",
   'collections.«\[T\]».get',
   'collections.«\[T\]».len',
+  'collections.«\[T\]».is_empty',
 ]
