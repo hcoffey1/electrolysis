@@ -13,6 +13,7 @@ dirModules=core \
 		   fixedbitset \
 		   alloc \
 		   rand \
+		   examples \
 		   collections
 
 targets=$(baseModules)\
@@ -37,6 +38,7 @@ $(baseModules):
 #Typecheck subdirectories
 core: bitvec.olean loop_combinator.olean
 rand: core
+examples: core
 alloc: core 
 collections: core
 fixedbitset: core collections

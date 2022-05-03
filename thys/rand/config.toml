@@ -3,24 +3,25 @@ rustc_args = "$RUST_SRC_PATH/librand/lib.rs"
 targets = [
     #ChaCha RNG
     "rand.chacha.ChaChaRng",
+
+    #Reseeder RNG
+    "rand.reseeding.«ReseedingRng<R, Rsdr>».(new|reseed_if_necessary)",
+    "rand.reseeding.ReseedWithDefault",
+
+    #Range
+    "rand.distributions.range.Range", 
+    "rand.distributions.range.«Range<X>».(new)", 
+    "rand.distributions.range.SampleRange", 
+
+    #Distributions======
+    #"rand.distributions.exponential.Exp1", #Floats not implemented for transpiler
+
     #"rand.chacha.ChaChaRng.new_unseeded", #Causes panic, &mut in nested type
     #"rand.chacha.ChaChaRng.set_counter", #generated lean does not typecheck
 
 
     #"rand.isaac.Isaac64Rng", #Unknown identifier core.wrapping
     #"rand.isaac.IsaacRng.new_unseeded", #&mut causes panic
-
-    #Reseeder RNG
-    "rand.reseeding.«ReseedingRng<R, Rsdr>».(new|reseed_if_necessary)",
-    "rand.reseeding.ReseedWithDefault",
-
-    #Distributions======
-    #"rand.distributions.exponential.Exp1", #Floats not implemented for transpiler
-
-    #Range
-    "rand.distributions.range.Range", 
-    "rand.distributions.range.«Range<X>».(new)", 
-    "rand.distributions.range.SampleRange", 
 ]
 
 #Code to replace with axioms

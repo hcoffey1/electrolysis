@@ -13,6 +13,14 @@ open [notation] prod.ops
 open [notation] unit
 open collections
 
+definition collections.«[T]».len {T : Type₁} (selfₐ : (slice T)) : sem (usize) :=
+let' «self$2» ← selfₐ;
+let' t3 ← «self$2»;
+dostep «$tmp» ← @core.«[T] as core.slice.SliceExt».len T t3;
+let' ret ← «$tmp»;
+return (ret)
+
+
 definition collections.«[T]».get {T : Type₁} (selfₐ : (slice T)) (indexₐ : usize) : sem ((core.option.Option T)) :=
 let' «self$3» ← selfₐ;
 let' «index$4» ← indexₐ;
